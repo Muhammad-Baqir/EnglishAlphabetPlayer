@@ -67,14 +67,34 @@ public class AlphabetAnimation extends AppCompatActivity {
     private void StartAnimation() {
         // Stop
         int width = (displayMetrics.widthPixels)/2;
-        // Initial Location
-        imageView.setX(-width);
-        imageView1.setX(width);
-        imageView2.setX(-width);
         // Alphabet Animation
-        imageView.animate().setDuration(HALF_DURATION*2).translationX(width);
-        imageView1.animate().rotation(720).translationX(-width).setDuration(HALF_DURATION*2);
-        imageView2.animate().rotation(720).translationX(width).setDuration(HALF_DURATION*2);
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, width, 0, 0);
+        translateAnimation.setDuration(HALF_DURATION);
+        translateAnimation.setRepeatMode(Animation.REVERSE);
+        translateAnimation.setRepeatCount(Animation.INFINITE);
+        imageView.setAnimation(translateAnimation);
+//        imageView.animate().setDuration(HALF_DURATION*2).translationX(width);
+//        imageView1.animate().rotation(720).translationX(-width).setDuration(HALF_DURATION*2);
+//        imageView2.animate().rotation(720).translationX(width).setDuration(HALF_DURATION*2);
+
+        RotateAnimation rotateAnimation = new RotateAnimation(0, 720, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setDuration(HALF_DURATION);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        rotateAnimation.setRepeatMode(Animation.REVERSE);
+
+        TranslateAnimation translateAnimation1 = new TranslateAnimation(0, -width, 0, 0);
+        translateAnimation1.setDuration(HALF_DURATION);
+        translateAnimation1.setRepeatMode(Animation.REVERSE);
+        translateAnimation1.setRepeatCount(Animation.INFINITE);
+        AnimationSet s1 = new AnimationSet(false);
+        s1.addAnimation(rotateAnimation);
+        s1.addAnimation(translateAnimation1);
+        imageView1.setAnimation(s1);
+
+        AnimationSet s = new AnimationSet(false);
+        s.addAnimation(rotateAnimation);
+        s.addAnimation(translateAnimation);
+        imageView2.setAnimation(s);
     }
 
     private void StartPlayer() {
@@ -94,12 +114,14 @@ public class AlphabetAnimation extends AppCompatActivity {
             @Override
             public void run() {
                 mediaPlayer.stop();
+                StartPlayer();
             }
         }, 7000); // 7sec
     }
 
     @Override
     protected void onDestroy() {
+        timer.cancel();
         mediaPlayer.stop();
         super.onDestroy();
     }
